@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ content.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ===== HEADER ===== -->
+<div class="p-4 mb-4 text-white rounded-4 shadow-sm"
+     style="background: linear-gradient(135deg, #4f46e5, #9333ea);">
+
+    <h2 class="fw-bold mb-1">{{ content.title }}</h2>
+    <p class="mb-0 small">Click highlighted words to explore multimedia explanations</p>
+
+</div>
+
+<div class="row g-4">
+
+    <!-- LEFT SIDE -->
+    <div class="col-lg-8">
+
+        <!-- CONTENT -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-3 fw-semibold">📖 Lesson Content</h5>
+
+                <div class="content-body fs-6">
+                    {{ body|safe }}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body">
+
+                <h5 class="mb-3 fw-semibold">⭐ Student Reviews</h5>
+
+                {% for review in reviews %}
+                    <div class="border-bottom py-3">
+
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ review.name }}</strong>
+                            <span class="text-warning">⭐ {{ review.rating }}/5</span>
+                        </div>
+
+                        <p class="mb-0 text-muted small">
+                            {{ review.comment }}
+                        </p>
+
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No reviews yet</p>
+                {% endfor %}
+
+            </div>
+        </div>
+        <!-- ADD REVIEW -->
+        <div class="card border-0 shadow-sm rounded-4 mt-4">
+
+            <div class="card-body">
+
+                <h5 class="mb-3 fw-semibold">✍️ Write Review</h5>
+
+                {% if user.is_authenticated %}
+
+                <form method="POST" action="{% url 'add_review' content.id %}">
+                    {% csrf_token %}
+
+                    <input name="name" class="form-control mb-2" placeholder="Your Name">
+
+                    <textarea name="comment" class="form-control mb-2"
+                            placeholder="Write your feedback..."></textarea>
+
+                    <input name="rating" type="number" min="1" max="5"
+                        class="form-control mb-3" placeholder="Rating (1-5)">
+
+                    <button class="btn btn-primary w-100">
+                        Submit Review
+                    </button>
+                </form>
+
+                {% else %}
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">
+                        Login required to submit review
+                    </p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">
+                        Login Now
+                    </a>
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="col-lg-4">
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body">
+
+                <h5 class="mb-3 fw-semibold">📂 Course Sections</h5>
+
+                <div class="accordion" id="lessonAccordion">
+
+                    <div class="accordion-item border-0 mb-2">
+                        <button class="accordion-button rounded-3"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#intro">
+                            Introduction
+                        </button>
+
+                        <div id="intro" class="accordion-collapse collapse show">
+                            <div class="accordion-body small">
+                                Basic overview of the topic.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border-0 mb-2">
+                        <button class="accordion-button collapsed rounded-3"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#detail">
+                            Detailed Explanation
+                        </button>
+
+                        <div id="detail" class="accordion-collapse collapse">
+                            <div class="accordion-body small">
+                                Step-by-step explanation will appear here.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border-0">
+                        <button class="accordion-button collapsed rounded-3"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#resources">
+                            Additional Resources
+                        </button>
+
+                        <div id="resources" class="accordion-collapse collapse">
+                            <div class="accordion-body small">
+                                Links, videos, PDFs etc.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===== PRO MODAL ===== -->
+<div class="modal fade" id="exampleModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+
+    <div class="modal-content rounded-4 border-0 shadow">
+
+      <!-- Header -->
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-semibold">📘 Explanation</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body" id="modal-content">
+
+        <!-- JS will inject content here -->
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
