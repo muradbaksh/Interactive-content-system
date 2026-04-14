@@ -30,10 +30,11 @@ env.read_env()
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://interactive-content-system.onrender.com'
+]
 
-
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['interactive-content-system.onrender.com']
 
 # Application definition
 
